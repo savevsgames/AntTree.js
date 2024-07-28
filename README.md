@@ -1,6 +1,6 @@
 # AntTree.js
 
-AntTree.js is a JavaScript library that provides an intuitive interface for web developers to manage the DOM and events using an analogy of ants and trees. The library simplifies basic scripting tasks while allowing the use of regular JavaScript alongside AntTree.js code.
+AntTree.js is a JavaScript library designed to simplify DOM manipulation and event handling using an analogy of ants and trees. The library allows users to create and manage DOM elements (branches and leaves), handle events (scout ants), and manage data (carrier ants) with an intuitive interface.
 
 **CURRENT STATE => AntTree.js is a conceptual library that is in the planning stages. Eventually it may become a good resource to developers learning JavaScript and web development.**
 
@@ -9,16 +9,25 @@ AntTree.js is a JavaScript library that provides an intuitive interface for web 
 - [AntTree.js](#anttreejs)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
+  - [Note](#note)
   - [Getting Started](#getting-started)
-    - [Installation](#installation)
-  - [Usage](#usage)
-  - [AntTreeBark.js](#anttreebarkjs)
-    - [Installation](#installation-1)
-  - [Usage](#usage-1)
-  - [Documentation](#documentation)
-  - [Contribution](#contribution)
+    - [Usage](#usage)
+  - [API Documentation](#api-documentation)
+    - [Core Concepts](#core-concepts)
+    - [Ant Types](#ant-types)
+      - [Scout Ants](#scout-ants)
+      - [Worker Ants](#worker-ants)
+      - [Carrier Ants](#carrier-ants)
+      - [Queen Ants](#queen-ants)
+      - [Guard Ants](#guard-ants)
+    - [Tree Structure](#tree-structure)
+      - [Tree](#tree)
+      - [Branch](#branch)
+      - [Leaf](#leaf)
+    - [Example Usage](#example-usage)
+      - [Classic DOM Manipulation and Event Handling](#classic-dom-manipulation-and-event-handling)
+      - [Simplified with AntTree.js](#simplified-with-anttreejs)
   - [License](#license)
-  - [Community Engagement](#community-engagement)
 
 ## Features
 
@@ -27,130 +36,248 @@ AntTree.js is a JavaScript library that provides an intuitive interface for web 
 - **Data Management**: Implement carrier ants to handle variables and data.
 - **Extensible Classes**: Create custom functionality with queen ants.
 
+## Note
+
+AntTree.js is not yet available on npm. Once it is, installation instructions will be provided here.
+
 ## Getting Started
 
-### Installation
+### Usage
 
-The library is not yet available. When it is live you will be able to install AntTree.js via npm:
+Here's an example of how to use AntTree.js:
 
+```javascript
+import {
+  Tree,
+  Branch,
+  Leaf,
+  ClickScout,
+  DataWorker,
+  DataCarrier,
+} from "anttree";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const myTree = new Tree();
+
+  // Create root branch
+  const rootBranch = myTree.addBranch("div", { id: "root" });
+  document.body.appendChild(rootBranch.element);
+
+  // Add button as a branch
+  const buttonBranch = rootBranch.addBranch("button", {
+    innerText: "Click me",
+  });
+
+  // Add paragraph as a leaf
+  const paragraphLeaf = rootBranch.addLeaf("p", "This is a paragraph.");
+
+  // Create a DataCarrier to hold the text data
+  const textData = new DataCarrier("textData", "Button was clicked!");
+
+  // Create a ClickScout ant to handle click events
+  const clickScout = new ClickScout((event) => {
+    console.log("Button clicked!", event);
+    paragraphLeaf.content = textData.data;
+  });
+
+  // Add the ClickScout to the button branch
+  buttonBranch.addAnt(clickScout);
+
+  // Trigger the event to update the paragraph text
+  buttonBranch.triggerEvent("click");
+});
 ```
-npm install anttree
-```
 
-## Usage
+## API Documentation
 
-    ```javascript
-    import { Tree, ClickScout, DataWorker, DataCarrier, QueenAnt } from 'anttree';
+### Core Concepts
 
-    // Create a new tree
-    const myTree = new Tree();
+- **Tree**: Represents the entire DOM structure.
+- **Branch**: Represents DOM elements.
+- **Leaf**: Represents text nodes or content.
+- **Bark**: Acts as a firewall, protecting the inner tree mechanisms.
+- **Sap**: Represents protected data within the tree.
+- **Ant**: Represents various JavaScript functions and event handlers.
+- **Trail**: Represents event propagation paths.
 
-    // Add branches and leaves
-    const branch1 = myTree.addBranch('div', { id: 'branch1' });
-    const leaf1 = branch1.addLeaf('p', 'This is a leaf');
+### Ant Types
 
-    // Create ants with specific names
-    const clickScout = new ClickScout((event) => console.log('Clicked!', event), { dataCarrier });
-    const dataWorker = new DataWorker((data) => console.log('Working with', data));
-    const dataCarrier = new DataCarrier('myData', 'Some data');
-    const queenAnt = new QueenAnt('MyClass', class {
-        constructor(name) {
-            this.name = name;
-        }
-    });
+#### Scout Ants
 
-    // Use ants to manipulate the tree
-    branch1.addAnt(clickScout);
-    leaf1.addAnt(dataWorker);
-    myTree.addAnt(dataCarrier);
-    myTree.addAnt(queenAnt);
+- **ClickScout**: Handles click events.
+- **HoverScout**: Handles hover events.
+- **InputScout**: Handles input events.
 
-    // Example of event triggering
-    branch1.triggerEvent('click');
-    ```
+#### Worker Ants
 
-## AntTreeBark.js
+- **DataWorker**: Processes data.
+- **DOMWorker**: Manipulates the DOM.
 
-AntTreeBark.js is an extension of AntTree.js that includes additional security features such as password protection and data obfuscation. It uses the same ant and tree analogy but adds guard ants to implement security checks and validation.
+#### Carrier Ants
 
-**CURRENT STATE => AntTreeBark.js is a conceptual library that is in the planning stages. Eventually it may become a good resource to developers learning JavaScript and web development.**
+- **DataCarrier**: Carries data variables.
+- **SapCarrier**: Carries protected data (sap).
 
-### Installation
+#### Queen Ants
 
-You can install AntTreeBark.js via npm:
+- **QueenAnt**: Creates instances of classes.
 
-    ```bash
-        npm install anttreebark
-    ```
+#### Guard Ants
 
-## Usage
+- **GuardAnt**: Implements security checks and validation.
 
-Here's an example of how to use AntTreeBark.js:
+### Tree Structure
 
-    ```javascript
-    import { Tree, ClickScout, DataWorker, DataCarrier, QueenAnt, GuardAnt } from 'anttreebark';
+#### Tree
 
-    // Create a new tree with security features
-    const myTree = new Tree();
+```javascript
+class Tree {
+  constructor() {
+    this.branches = [];
+    this.ants = [];
+    this.guardAnts = [];
+  }
 
-    // Add branches and leaves
-    const branch1 = myTree.addBranch('div', { id: 'branch1' });
-    const leaf1 = branch1.addLeaf('p', 'This is a leaf');
+  addBranch(tag, attributes) {
+    const branch = new Branch(tag, attributes);
+    this.branches.push(branch);
+    return branch;
+  }
 
-    // Create ants with specific names
-    const clickScout = new ClickScout((event) => console.log('Clicked!', event), { dataCarrier });
-    const dataWorker = new DataWorker((data) => console.log('Working with', data));
-    const dataCarrier = new DataCarrier('myData', 'Some data');
-    const queenAnt = new QueenAnt('MyClass', class {
-        constructor(name) {
-            this.name = name;
-        }
-    });
-    const guardAnt = new GuardAnt((request) => {
-        // Security logic here
-        return request.isValid;
-    });
-
-    // Use ants to manipulate the tree
-    branch1.addAnt(clickScout);
-    leaf1.addAnt(dataWorker);
-    myTree.addAnt(dataCarrier);
-    myTree.addAnt(queenAnt);
-    myTree.addAnt(guardAnt);
-
-    // Example of event triggering
-    branch1.triggerEvent('click');
-
-    // Example of security check
-    const request = { isValid: true };
-    if (myTree.checkAccess(request)) {
-        console.log('Access granted');
+  addAnt(ant) {
+    if (ant.type === "GuardAnt") {
+      this.guardAnts.push(ant);
     } else {
-        console.log('Access denied');
+      this.ants.push(ant);
     }
-    ```
+  }
 
-## Documentation
+  checkAccess(request) {
+    return this.guardAnts.every((ant) => ant.check(request));
+  }
+}
+```
 
-Detailed documentation is available in the docs folder. It includes descriptions of each ant type and their roles, as well as practical examples demonstrating how to use the library for common tasks.
+#### Branch
 
-## Contribution
+```javascript
+class Branch {
+  constructor(tag, attributes) {
+    this.tag = tag;
+    this.attributes = attributes;
+    this.leaves = [];
+    this.ants = [];
+  }
 
-Contributions are welcome! Please read the CONTRIBUTING.md file for more information on how to contribute to this project.
+  addLeaf(tag, content) {
+    const leaf = new Leaf(tag, content);
+    this.leaves.push(leaf);
+    return leaf;
+  }
+
+  addAnt(ant) {
+    this.ants.push(ant);
+  }
+
+  triggerEvent(event) {
+    this.ants.forEach((ant) => {
+      if (ant.type === "ScoutAnt" && ant.event === event) {
+        ant.callback();
+      }
+    });
+  }
+}
+```
+
+#### Leaf
+
+```javascript
+class Leaf {
+  constructor(tag, content) {
+    this.tag = tag;
+    this.content = content;
+    this.ants = [];
+  }
+
+  addAnt(ant) {
+    this.ants.push(ant);
+  }
+}
+```
+
+### Example Usage
+
+#### Classic DOM Manipulation and Event Handling
+
+Here is a classic JavaScript example:
+
+```javascript
+document.addEventListener("DOMContentLoaded", () => {
+  const rootDiv = document.createElement("div");
+  rootDiv.id = "root";
+  document.body.appendChild(rootDiv);
+
+  const button = document.createElement("button");
+  button.innerText = "Click me";
+  rootDiv.appendChild(button);
+
+  const paragraph = document.createElement("p");
+  paragraph.innerText = "This is a paragraph.";
+  rootDiv.appendChild(paragraph);
+
+  button.addEventListener("click", (event) => {
+    console.log("Button clicked!", event);
+    paragraph.innerText = "Button was clicked!";
+  });
+});
+```
+
+#### Simplified with AntTree.js
+
+The same example using AntTree.js:
+
+```javascript
+import {
+  Tree,
+  Branch,
+  Leaf,
+  ClickScout,
+  DataWorker,
+  DataCarrier,
+} from "anttree";
+
+document.addEventListener("DOMContentLoaded", () => {
+  const myTree = new Tree();
+
+  // Create root branch
+  const rootBranch = myTree.addBranch("div", { id: "root" });
+  document.body.appendChild(rootBranch.element);
+
+  // Add button as a branch
+  const buttonBranch = rootBranch.addBranch("button", {
+    innerText: "Click me",
+  });
+
+  // Add paragraph as a leaf
+  const paragraphLeaf = rootBranch.addLeaf("p", "This is a paragraph.");
+
+  // Create a DataCarrier to hold the text data
+  const textData = new DataCarrier("textData", "Button was clicked!");
+
+  // Create a ClickScout ant to handle click events
+  const clickScout = new ClickScout((event) => {
+    console.log("Button clicked!", event);
+    paragraphLeaf.content = textData.data;
+  });
+
+  // Add the ClickScout to the button branch
+  buttonBranch.addAnt(clickScout);
+
+  // Trigger the event to update the paragraph text
+  buttonBranch.triggerEvent("click");
+});
+```
 
 ## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
-
-## Community Engagement
-
-Share the project on platforms like GitHub, Reddit, and developer forums.
-Encourage contributions and feedback from the community.
-Continuously improve the library based on user input and emerging best practices.
-By using AntTree.js and AntTreeBark.js, you can simplify your DOM manipulation tasks while implementing necessary security measures in an intuitive and engaging way.
-
-```
-
-Feel free to modify this README to better suit your project's specific needs and to add and any additional information that you think is relevant using the issues in this repo.
-
-```
+MIT License
